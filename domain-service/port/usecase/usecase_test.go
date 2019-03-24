@@ -201,7 +201,7 @@ func TestDeleteInEmptyRepo(t *testing.T) {
 	ucase := usecase.NewPortUsecase(mockRepo)
 	r, err := ucase.Delete(port.ID)
 	if err == nil || r {
-		t.Error("item should be updated in filled repository")
+		t.Error("item should not be remmoved from empty repository")
 	}
 }
 
@@ -220,6 +220,6 @@ func TestDeleteInFilledRepo(t *testing.T) {
 	ucase := usecase.NewPortUsecase(mockRepo)
 	r, err := ucase.Delete(port.ID)
 	if err != nil || !r {
-		t.Error("item should be updated in filled repository")
+		t.Error("item should removed from filled repository")
 	}
 }
