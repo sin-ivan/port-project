@@ -51,7 +51,7 @@ func (p *portUsecase) Store(m *models.Port) (*models.Port, error) {
 
 func (p *portUsecase) Update(m *models.Port) (*models.Port, error) {
 	port, err := p.GetByID(m.ID)
-	if port != nil {
+	if port == nil {
 		return nil, err
 	}
 
