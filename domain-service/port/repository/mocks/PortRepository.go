@@ -5,9 +5,10 @@
 package mock_repository
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	port "github.com/port-project/domain-service/port"
-	reflect "reflect"
 )
 
 // MockPortRepository is a mock of PortRepository interface
