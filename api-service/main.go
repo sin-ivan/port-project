@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,10 +16,15 @@ import (
 )
 
 func setupServer() {
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "8080"
+	}
+
 	r := router.NewRouter()
 	srv := &http.Server{
 		Handler:      r.Handler,
-		Addr:         ":8080",
+		Addr:         fmt.Sprintf(":%s", port),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
@@ -26,7 +32,7 @@ func setupServer() {
 	// Graceful Shutdown
 	waitForShutdown(srv)
 
-	log.Println("Starting service")
+	log.Println("Starting service on port:", port)
 
 	err := srv.ListenAndServe()
 	if err != nil {

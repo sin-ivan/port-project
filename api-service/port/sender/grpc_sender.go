@@ -3,18 +3,25 @@ package sender
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	models "github.com/port-project/api-service/port"
-	"github.com/port-project/domain-service/port/delivery/grpc/port_grpc"
+	"github.com/port-project/api-service/port/delivery/grpc/port_grpc"
 	"google.golang.org/grpc"
 )
 
-const (
-	address = "localhost:8081"
-)
-
 type sender struct {
+}
+
+func address() string {
+	url := os.Getenv("DOMAIN_URL")
+	if len(url) == 0 {
+		url = "localhost:8081"
+	}
+
+	log.Println("gRPC dial address:", url)
+	return url
 }
 
 // transformToPortRPC is used to map model Port to gRPC port objects
@@ -71,7 +78,7 @@ func (s *sender) StorePort(port *models.Port) {
 
 	// Contact the server and print out its response.
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(address(), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -96,7 +103,7 @@ func (s *sender) GetAll() []*models.Port {
 
 	// Contact the server and print out its response.
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(address(), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

@@ -47,18 +47,19 @@ func (r *Response) Text(code int, body string) {
 // Handler is used to handle available routes
 func (h *handler) setHandlers() {
 	h.mux.HandleFunc("/parse", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Start file parsing")
 
 		filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 		filePath += "/resources/ports.json"
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(filePath)
+		log.Println("Parsing file:", filePath)
 
 		resp := Response{w}
 		resp.Text(http.StatusOK, "Start file parsing")
 
-		log.Println("start file parsing")
+		log.Println("File is ready for parsing")
 
 		parser := parser.NewPortParser(portHandler)
 		go parser.Parse(filePath)
