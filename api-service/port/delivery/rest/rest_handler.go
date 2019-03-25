@@ -49,7 +49,7 @@ func (h *handler) setHandlers() {
 	h.mux.HandleFunc("/parse", func(w http.ResponseWriter, r *http.Request) {
 
 		filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		filePath += "/port/resources/ports.json"
+		filePath += "/resources/ports.json"
 		if err != nil {
 			log.Fatal(err)
 		}
