@@ -20,11 +20,12 @@ func NewPortParser(handler func(*models.Port)) PortParser {
 	return &portParser{handler}
 }
 
-func (p *portParser) Parse(filePath string) {
+func (p *portParser) Parse(filePath string) error {
+	var err error
 	file, err := os.Open(filePath)
-	//handleError(err)
+
 	if err != nil {
-		log.Fatal("Failed reading resource file")
+		log.Println("Failed reading resource file")
 	}
 	defer file.Close()
 
@@ -32,9 +33,10 @@ func (p *portParser) Parse(filePath string) {
 	dec := json.NewDecoder(reader)
 
 	// read open bracket
-	t, err := dec.Token()
+	_, err = dec.Token()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return err
 	}
 
 	// parse values from the reader
@@ -42,13 +44,15 @@ func (p *portParser) Parse(filePath string) {
 		identifier, err := dec.Token()
 		ID := fmt.Sprintf("%v", identifier)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return err
 		}
 		// decode an array value (Port)
 		var result *models.Port
 		err = dec.Decode(&result)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return err
 		}
 
 		port := &models.Port{
@@ -70,9 +74,11 @@ func (p *portParser) Parse(filePath string) {
 	}
 
 	// read closing bracket
-	t, err = dec.Token()
+	_, err = dec.Token()
 	if err != nil {
 		log.Println(err)
+		return err
 	}
-	fmt.Printf("%T: %v\n", t, t)
+
+	return nil
 }

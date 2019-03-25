@@ -46,42 +46,46 @@ func (r *Response) Text(code int, body string) {
 
 // Handler is used to handle available routes
 func (h *handler) setHandlers() {
-	h.mux.HandleFunc("/parse", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Start file parsing")
+	h.mux.HandleFunc("/parse", handleParse)
+	h.mux.HandleFunc("/getAll", handleGetAll)
+	h.mux.HandleFunc("/", handleRoot)
+}
 
-		filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		filePath += "/resources/ports.json"
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("Parsing file:", filePath)
+func handleRoot(w http.ResponseWriter, r *http.Request) {
+	resp := Response{w}
+	resp.Text(http.StatusNotFound, "Not found")
+}
 
-		resp := Response{w}
-		resp.Text(http.StatusOK, "Start file parsing")
+func handleParse(w http.ResponseWriter, r *http.Request) {
+	log.Println("Start file parsing")
 
-		log.Println("File is ready for parsing")
+	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	filePath += "/resources/ports.json"
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Parsing file:", filePath)
 
-		parser := parser.NewPortParser(portHandler)
-		go parser.Parse(filePath)
-	})
+	resp := Response{w}
+	resp.Text(http.StatusOK, "Start file parsing")
 
-	h.mux.HandleFunc("/getAll", func(w http.ResponseWriter, r *http.Request) {
-		sender := sender.NewGrpcSender()
-		ports := sender.GetAll()
+	log.Println("File is ready for parsing")
 
-		json, err := json.Marshal(ports)
-		if err != nil {
-			log.Fatal("Cannot encode to JSON ", err)
-		}
+	parser := parser.NewPortParser(portHandler)
+	go parser.Parse(filePath)
+}
 
-		resp := Response{w}
-		resp.Text(http.StatusOK, string(json))
-	})
+func handleGetAll(w http.ResponseWriter, r *http.Request) {
+	sender := sender.NewGrpcSender()
+	ports := sender.GetAll()
 
-	h.mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		resp := Response{w}
-		resp.Text(http.StatusNotFound, "Not found")
-	})
+	json, err := json.Marshal(ports)
+	if err != nil {
+		log.Fatal("Cannot encode to JSON ", err)
+	}
+
+	resp := Response{w}
+	resp.Text(http.StatusOK, string(json))
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
