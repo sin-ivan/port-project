@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	deliveryGrpc "github.com/port-project/domain-service/port/delivery/grpc"
-	portRepo "github.com/port-project/domain-service/port/repository"
-	portUsecase "github.com/port-project/domain-service/port/usecase"
+	handler "github.com/port-project/domain-service/port/delivery/grpc/handler"
+	repository "github.com/port-project/domain-service/port/repository"
+	usecase "github.com/port-project/domain-service/port/usecase"
 	"google.golang.org/grpc"
 )
 
@@ -18,23 +18,24 @@ const (
 )
 
 func main() {
-	repo := portRepo.NewMapPortRepository()
-	usecase := portUsecase.NewPortUsecase(repo)
+	repo := repository.NewMapPortRepository()
+	ucase := usecase.NewPortUsecase(repo)
 
 	listener, err := net.Listen("tcp", serverPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	server := grpc.NewServer()
-	deliveryGrpc.NewPortServerGrpc(server, usecase)
 	log.Println("Starting service...")
-	err = server.Serve(listener)
+
+	serv := grpc.NewServer()
+	handler.NewPortServerGrpc(serv, ucase)
+	err = serv.Serve(listener)
 	if err != nil {
 		log.Println("Unexpected error:", err)
 	}
 
-	waitForShutdown(server)
+	waitForShutdown(serv)
 }
 
 func waitForShutdown(srv *grpc.Server) {

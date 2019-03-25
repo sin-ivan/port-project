@@ -11,61 +11,35 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const (
+	portDeletedCode       = 0
+	portWasNotDeletedCode = -1000
+)
+
+// PortGrpcHandler is used for handling gRPC callbacks
+type PortGrpcHandler interface {
+	GetPort(ctx context.Context, in *port_grpc.SingleRequest) (*port_grpc.Port, error)
+	GetAll(ctx context.Context, in *port_grpc.EmptyRequest) (*port_grpc.ListPort, error)
+	Store(ctx context.Context, in *port_grpc.Port) (*port_grpc.Port, error)
+	Update(ctx context.Context, in *port_grpc.Port) (*port_grpc.Port, error)
+	Delete(ctx context.Context, in *port_grpc.SingleRequest) (*port_grpc.DeleteResponse, error)
+}
+
 type server struct {
 	portUsecase usecase.PortUsecase
 }
 
-// transformToPortRPC is used to map model Port to gRPC port objects
-func (s *server) transformPortDataToRPC(port *models.Port) *port_grpc.Port {
-	if port == nil {
-		return nil
-	}
-
-	response := &port_grpc.Port{
-		ID:          port.ID,
-		Name:        port.Name,
-		City:        port.City,
-		Country:     port.Country,
-		Coordinates: port.Coordinates,
-		Alias:       port.Alias,
-		Regions:     port.Regions,
-		Province:    port.Province,
-		Timezone:    port.Timezone,
-		Unlocs:      port.Unlocs,
-		Code:        port.Code,
-	}
-	return response
-}
-
-func (s *server) transformPortRPCToData(port *port_grpc.Port) *models.Port {
-	if port == nil {
-		return nil
-	}
-
-	response := &models.Port{
-		ID:          port.ID,
-		Name:        port.Name,
-		City:        port.City,
-		Country:     port.Country,
-		Coordinates: port.Coordinates,
-		Alias:       port.Alias,
-		Regions:     port.Regions,
-		Province:    port.Province,
-		Timezone:    port.Timezone,
-		Unlocs:      port.Unlocs,
-		Code:        port.Code,
-	}
-	return response
-}
-
 // NewPortServerGrpc is used to create server instance
-func NewPortServerGrpc(grpcServer *grpc.Server, portUsecase usecase.PortUsecase) {
+func NewPortServerGrpc(grpcServer *grpc.Server, portUsecase usecase.PortUsecase) PortGrpcHandler {
 	portServer := &server{
 		portUsecase: portUsecase,
 	}
 
-	port_grpc.RegisterPortHandlerServer(grpcServer, portServer)
-	reflection.Register(grpcServer)
+	if grpcServer != nil {
+		port_grpc.RegisterPortHandlerServer(grpcServer, portServer)
+		reflection.Register(grpcServer)
+	}
+	return portServer
 }
 
 func (s *server) GetPort(ctx context.Context, in *port_grpc.SingleRequest) (*port_grpc.Port, error) {
@@ -113,7 +87,7 @@ func (s *server) Store(ctx context.Context, in *port_grpc.Port) (*port_grpc.Port
 
 func (s *server) Update(ctx context.Context, in *port_grpc.Port) (*port_grpc.Port, error) {
 	port := s.transformPortRPCToData(in)
-	p, err := s.portUsecase.Store(port)
+	p, err := s.portUsecase.Update(port)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
@@ -131,11 +105,56 @@ func (s *server) Delete(ctx context.Context, in *port_grpc.SingleRequest) (*port
 
 	response := &port_grpc.DeleteResponse{
 		Status: "Failed to delete",
+		Code:   portWasNotDeletedCode,
 	}
 
 	if removed {
 		response.Status = "Successfully deleted"
+		response.Code = portDeletedCode
 	}
 
-	return response, nil
+	return response, err
+}
+
+// transformToPortRPC is used to map model Port to gRPC port objects
+func (s *server) transformPortDataToRPC(port *models.Port) *port_grpc.Port {
+	if port == nil {
+		return nil
+	}
+
+	response := &port_grpc.Port{
+		ID:          port.ID,
+		Name:        port.Name,
+		City:        port.City,
+		Country:     port.Country,
+		Coordinates: port.Coordinates,
+		Alias:       port.Alias,
+		Regions:     port.Regions,
+		Province:    port.Province,
+		Timezone:    port.Timezone,
+		Unlocs:      port.Unlocs,
+		Code:        port.Code,
+	}
+	return response
+}
+
+func (s *server) transformPortRPCToData(port *port_grpc.Port) *models.Port {
+	if port == nil {
+		return nil
+	}
+
+	response := &models.Port{
+		ID:          port.ID,
+		Name:        port.Name,
+		City:        port.City,
+		Country:     port.Country,
+		Coordinates: port.Coordinates,
+		Alias:       port.Alias,
+		Regions:     port.Regions,
+		Province:    port.Province,
+		Timezone:    port.Timezone,
+		Unlocs:      port.Unlocs,
+		Code:        port.Code,
+	}
+	return response
 }
