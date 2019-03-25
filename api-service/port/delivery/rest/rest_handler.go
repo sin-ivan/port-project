@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	models "github.com/port-project/api-service/port"
 	parser "github.com/port-project/api-service/port/parser"
@@ -45,7 +47,13 @@ func (r *Response) Text(code int, body string) {
 // Handler is used to handle available routes
 func (h *handler) setHandlers() {
 	h.mux.HandleFunc("/parse", func(w http.ResponseWriter, r *http.Request) {
-		filePath := "/Users/ivan/src/golang/src/github.com/port-project/resources/ports.json"
+
+		filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		filePath += "/port/resources/ports.json"
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(filePath)
 
 		resp := Response{w}
 		resp.Text(http.StatusOK, "Start file parsing")
@@ -53,7 +61,6 @@ func (h *handler) setHandlers() {
 		log.Println("start file parsing")
 
 		parser := parser.NewPortParser(portHandler)
-		// sender := sender.NewGrpcSender()
 		go parser.Parse(filePath)
 	})
 
