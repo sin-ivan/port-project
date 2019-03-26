@@ -19,8 +19,6 @@ func address() string {
 	if len(url) == 0 {
 		url = "localhost:8081"
 	}
-
-	log.Println("gRPC dial address:", url)
 	return url
 }
 
@@ -74,10 +72,10 @@ func NewGrpcSender() PortSender {
 
 // StorePort is used to store port to DB using gRPC
 func (s *sender) StorePort(port *models.Port) {
-	println("Sending port info:", port.Name)
 
 	// Contact the server and print out its response.
 	// Set up a connection to the server.
+	var err error
 	conn, err := grpc.Dial(address(), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -90,11 +88,9 @@ func (s *sender) StorePort(port *models.Port) {
 
 	p := s.transformPortDataToRPC(port)
 
-	r, err := client.Store(ctx, p)
+	_, err = client.Store(ctx, p)
 	if err != nil {
 		log.Println("Could not sent port info:", err)
-	} else {
-		log.Println("Port stored:", r.ID)
 	}
 }
 

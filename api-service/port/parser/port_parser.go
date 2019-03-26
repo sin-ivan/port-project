@@ -80,5 +80,7 @@ func (p *portParser) Parse(filePath string) error {
 		return err
 	}
 
+	log.Printf("Completed file parsing")
+
 	return nil
 }

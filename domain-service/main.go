@@ -13,20 +13,21 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	serverPort = ":8081"
-)
-
 func main() {
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = ":8081"
+	}
+
 	repo := repository.NewMapPortRepository()
 	ucase := usecase.NewPortUsecase(repo)
 
-	listener, err := net.Listen("tcp", serverPort)
+	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	log.Println("Starting service...")
+	log.Println("Starting service on port:", port)
 
 	serv := grpc.NewServer()
 	handler.NewPortServerGrpc(serv, ucase)
