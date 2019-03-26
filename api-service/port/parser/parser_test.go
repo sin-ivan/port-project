@@ -3,7 +3,7 @@ package parser_test
 import (
 	"log"
 	"os"
-	"path/filepath"
+	"path"
 	"testing"
 
 	models "github.com/port-project/api-service/port"
@@ -31,11 +31,11 @@ func TestParseBrokenFile(t *testing.T) {
 
 	p := parser.NewPortParser(parseHandler)
 
-	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		t.Error("failed reading test file for parsing")
-	}
-	filePath += "/test_files/ports_broken.json"
+	gp := os.Getenv("GOPATH")
+	ap := path.Join(gp, "src/github.com/port-project/api-service/port/parser")
+
+	filePath := ap + "/test_files/ports_broken.json"
+	log.Println("File path:", filePath)
 
 	e := p.Parse(filePath)
 	if e == nil {
@@ -51,11 +51,10 @@ func TestParseEmptyFile(t *testing.T) {
 
 	p := parser.NewPortParser(parseHandler)
 
-	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		t.Error("failed reading test file for parsing")
-	}
-	filePath += "/test_files/ports_empty.json"
+	gp := os.Getenv("GOPATH")
+	ap := path.Join(gp, "src/github.com/port-project/api-service/port/parser")
+
+	filePath := ap + "/test_files/ports_empty.json"
 
 	e := p.Parse(filePath)
 	if e == nil {
@@ -70,14 +69,11 @@ func TestParseValidFile(t *testing.T) {
 
 	p := parser.NewPortParser(parseHandler)
 
-	fPath, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	log.Println(fPath)
-	if err != nil {
-		t.Error("failed reading test file for parsing")
-	}
-	fPath += "/test_files/ports_valid.json"
+	gp := os.Getenv("GOPATH")
+	ap := path.Join(gp, "src/github.com/port-project/api-service/port/parser")
+	filePath := ap + "/test_files/ports_valid.json"
 
-	e := p.Parse(fPath)
+	e := p.Parse(filePath)
 	if e != nil {
 		t.Error("valid file should be parsed")
 	}
