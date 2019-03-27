@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	models "github.com/port-project/domain-service/port"
-	handler "github.com/port-project/domain-service/port/delivery/grpc/handler"
-	"github.com/port-project/domain-service/port/usecase/mocks"
-	"github.com/port-project/proto"
+	models "github.com/sin-ivan/port-project/domain-service/port"
+	handler "github.com/sin-ivan/port-project/domain-service/port/delivery/grpc/handler"
+	"github.com/sin-ivan/port-project/domain-service/port/usecase/mocks"
+	"github.com/sin-ivan/port-proto"
 	"google.golang.org/grpc"
 )
 

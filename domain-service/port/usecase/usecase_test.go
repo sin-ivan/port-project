@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	models "github.com/port-project/domain-service/port"
-	"github.com/port-project/domain-service/port/repository/mocks"
-	usecase "github.com/port-project/domain-service/port/usecase"
+	models "github.com/sin-ivan/port-project/domain-service/port"
+	"github.com/sin-ivan/port-project/domain-service/port/repository/mocks"
+	usecase "github.com/sin-ivan/port-project/domain-service/port/usecase"
 )
 
 //func SetupTest(

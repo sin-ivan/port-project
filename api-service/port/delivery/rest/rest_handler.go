@@ -46,9 +46,9 @@ func (r *Response) Text(code int, body string) {
 
 // Handler is used to handle available routes
 func (h *handler) setHandlers() {
-	h.mux.HandleFunc("/parse", handleParse)
-	h.mux.HandleFunc("/getAll", handleGetAll)
 	h.mux.HandleFunc("/", handleRoot)
+	h.mux.HandleFunc("/load", handleStoring)
+	h.mux.HandleFunc("/all", handleGetAll)
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +56,7 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 	resp.Text(http.StatusNotFound, "Not found")
 }
 
-func handleParse(w http.ResponseWriter, r *http.Request) {
+func handleStoring(w http.ResponseWriter, r *http.Request) {
 	log.Println("Start file parsing")
 
 	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package proto_grpc;
+
+// The port storing service definition.
+service PortHandler {
+  // Sends info about the port
+  rpc GetPort(SingleRequest) returns (Port);
+  rpc GetAll(EmptyRequest) returns (ListPort);
+  rpc Store(Port) returns (Port) {};
+  rpc Update(Port) returns (Port) {};
+  rpc Delete(SingleRequest) returns (DeleteResponse) {};
+}
+
+message EmptyRequest {
+}
+
+message TextResponse {
+    int32 code = 1;
+    string message = 2;
+}
+
+message DeleteResponse{
+  string status = 1;
+  int32 code = 2;
+}
+
+message ListPort {
+  repeated Port ports = 1;
+}
+
+message SingleRequest{
+  string id=1;
+}
+
+message Port {
+  string ID = 1;
+  string name = 2;
+  string city = 3;
+  string country = 4;
+  repeated string alias = 5;
+  repeated string regions = 6;
+  repeated float coordinates = 7;
+  string province = 8;
+  string timezone = 9;
+  repeated string unlocs = 10;
+  string code = 11;
+}

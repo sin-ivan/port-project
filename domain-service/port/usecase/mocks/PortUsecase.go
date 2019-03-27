@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	port "github.com/port-project/domain-service/port"
+	port "github.com/sin-ivan/port-project/domain-service/port"
 )
 
 // MockPortUsecase is a mock of PortUsecase interface

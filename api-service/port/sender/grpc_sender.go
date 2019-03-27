@@ -7,7 +7,7 @@ import (
 	"time"
 
 	models "github.com/sin-ivan/port-project/api-service/port"
-	"github.com/sin-ivan/port-project/proto"
+	"github.com/sin-ivan/port-proto"
 	"google.golang.org/grpc"
 )
 

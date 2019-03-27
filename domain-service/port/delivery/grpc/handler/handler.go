@@ -6,7 +6,7 @@ import (
 
 	models "github.com/sin-ivan/port-project/domain-service/port"
 	usecase "github.com/sin-ivan/port-project/domain-service/port/usecase"
-	"github.com/sin-ivan/port-project/proto"
+	"github.com/sin-ivan/port-proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

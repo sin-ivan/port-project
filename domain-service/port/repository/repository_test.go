@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	models "github.com/port-project/domain-service/port"
-	repository "github.com/port-project/domain-service/port/repository"
+	models "github.com/sin-ivan/port-project/domain-service/port"
+	repository "github.com/sin-ivan/port-project/domain-service/port/repository"
 )
 
 func TestStoreNoItems(t *testing.T) {
