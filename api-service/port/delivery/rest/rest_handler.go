@@ -26,7 +26,7 @@ func NewHandler() Handler {
 	return &handler
 }
 
-func portHandler(port *models.Port) {
+func portParsedHandler(port *models.Port) {
 	sender := sender.NewGrpcSender()
 	sender.StorePort(port)
 }
@@ -71,7 +71,7 @@ func handleStoring(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("File is ready for parsing")
 
-	parser := parser.NewPortParser(portHandler)
+	parser := parser.NewPortParser(portParsedHandler)
 	go parser.Parse(filePath)
 }
 

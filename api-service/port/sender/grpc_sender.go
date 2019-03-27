@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	models "github.com/sin-ivan/port-project/api-service/port"
@@ -65,30 +67,60 @@ func (s *sender) transformPortRPCToData(port *proto_grpc.Port) *models.Port {
 	return response
 }
 
+var _connection *grpc.ClientConn
+
+func grpcConnection() *grpc.ClientConn {
+
+	// Contact the server and print out its response.
+	// Set up a connection to the server.
+
+	if _connection != nil {
+		return _connection
+	}
+
+	var err error
+	connection, err := grpc.Dial(address(), grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	_connection = connection
+
+	return connection
+}
+
+func waitForShutdown() {
+
+	go func() {
+		interruptChan := make(chan os.Signal, 1)
+		signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+		// Block until we receive our signal.
+		<-interruptChan
+
+		defer _connection.Close()
+
+		log.Println("Closing gRPC connection")
+		os.Exit(0)
+	}()
+}
+
 // NewGrpcSender create new instance of gRPC data sender
 func NewGrpcSender() PortSender {
+	waitForShutdown()
 	return &sender{}
 }
 
 // StorePort is used to store port to DB using gRPC
 func (s *sender) StorePort(port *models.Port) {
 
-	// Contact the server and print out its response.
-	// Set up a connection to the server.
-	var err error
-	conn, err := grpc.Dial(address(), grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-
-	client := proto_grpc.NewPortHandlerClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	client := proto_grpc.NewPortHandlerClient(grpcConnection())
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
 	p := s.transformPortDataToRPC(port)
 
-	_, err = client.Store(ctx, p)
+	// Perform request to store port information
+	_, err := client.Store(ctx, p)
 	if err != nil {
 		log.Println("Could not sent port info:", err)
 	}
@@ -97,16 +129,8 @@ func (s *sender) StorePort(port *models.Port) {
 func (s *sender) GetAll() []*models.Port {
 	log.Println("Getting port list")
 
-	// Contact the server and print out its response.
-	// Set up a connection to the server.
-	conn, err := grpc.Dial(address(), grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-
-	client := proto_grpc.NewPortHandlerClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	client := proto_grpc.NewPortHandlerClient(grpcConnection())
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
 	// Request all the available items

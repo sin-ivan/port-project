@@ -16,6 +16,7 @@ import (
 )
 
 func setupServer() {
+	// PORT can be used to override value in development or in dockerfile
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
 		port = "8080"
@@ -47,7 +48,7 @@ func setupLogging() {
 	if logFileLocation != "" {
 		log.SetOutput(&lumberjack.Logger{
 			Filename:   logFileLocation,
-			MaxSize:    500, // megabytes
+			MaxSize:    50, // megabytes
 			MaxBackups: 3,
 			MaxAge:     28,   //days
 			Compress:   true, // disabled by default
@@ -72,10 +73,10 @@ func waitForShutdown(srv *http.Server) {
 		// Create a deadline to wait for.
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 		defer cancel()
+
 		srv.Shutdown(ctx)
 
 		log.Println("Shutting down")
-		println("Shut down server")
 		os.Exit(0)
 	}()
 }

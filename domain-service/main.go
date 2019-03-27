@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+	// PORT can be used to override value in development or in dockerfile
 	port := os.Getenv("PORT")
 	if len(port) == 0 {
 		port = ":8081"
@@ -51,7 +52,6 @@ func waitForShutdown(srv *grpc.Server) {
 		srv.GracefulStop()
 
 		log.Println("Shutting down")
-		println("Shut down server")
 		os.Exit(0)
 	}()
 }
