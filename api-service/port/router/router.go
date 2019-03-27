@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	handler "github.com/port-project/api-service/port/delivery/rest"
+	handler "github.com/sin-ivan/port-project/api-service/port/delivery/rest"
 )
 
 // NewRouter is used to create router instance

@@ -1,6 +1,6 @@
 package repository
 
-import models "github.com/port-project/domain-service/port"
+import models "github.com/sin-ivan/port-project/domain-service/port"
 
 // PortRepository is used for persisting port data
 type PortRepository interface {

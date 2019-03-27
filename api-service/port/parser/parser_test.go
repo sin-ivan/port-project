@@ -6,8 +6,8 @@ import (
 	"path"
 	"testing"
 
-	models "github.com/port-project/api-service/port"
-	parser "github.com/port-project/api-service/port/parser"
+	models "github.com/sin-ivan/port-project/api-service/port"
+	parser "github.com/sin-ivan/port-project/api-service/port/parser"
 )
 
 func TestParseEmptyFileString(t *testing.T) {

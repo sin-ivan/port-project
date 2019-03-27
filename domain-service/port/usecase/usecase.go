@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	models "github.com/port-project/domain-service/port"
-	"github.com/port-project/domain-service/port/repository"
+	models "github.com/sin-ivan/port-project/domain-service/port"
+	"github.com/sin-ivan/port-project/domain-service/port/repository"
 )
 
 // PortUsecase is used for describing logic usecase

@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	handler "github.com/port-project/domain-service/port/delivery/grpc/handler"
-	repository "github.com/port-project/domain-service/port/repository"
-	usecase "github.com/port-project/domain-service/port/usecase"
+	handler "github.com/sin-ivan/port-project/domain-service/port/delivery/grpc/handler"
+	repository "github.com/sin-ivan/port-project/domain-service/port/repository"
+	usecase "github.com/sin-ivan/port-project/domain-service/port/usecase"
 	"google.golang.org/grpc"
 )
 

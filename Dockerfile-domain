@@ -1,12 +1,15 @@
-
 # Start from golang alpine
 FROM golang:alpine AS builder
 
+WORKDIR /go/src/github.com/sin-ivan/port-project/
+
+COPY ./proto/ ./proto/
+
 # Set the Current Working Directory inside the container
-WORKDIR /go/src/github.com/port-project/api-service/
+WORKDIR /go/src/github.com/sin-ivan/port-project/domain-service/
 
 # Copy everything from the current directory to the working directory inside the container
-COPY . .
+COPY /domain-service/ .
 
 RUN apk add --no-cache git
 
@@ -21,7 +24,7 @@ RUN go install -v "google.golang.org/grpc"
 RUN go install -v "github.com/golang/protobuf/proto"
 
 # Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/api-service .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/domain-service .
 
 ######## Start a new stage from scratch #######
 FROM alpine:latest  
@@ -31,9 +34,8 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
-COPY --from=builder /go/bin/api-service .
-COPY --from=builder /go/src/github.com/port-project/api-service/resources/ports.json /root/resources/
+COPY --from=builder /go/bin/domain-service .
 
 EXPOSE 8080
 
-CMD ["./api-service"] 
+CMD ["./domain-service"] 

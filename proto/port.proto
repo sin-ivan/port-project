@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package port_grpc;
+package proto_grpc;
 
 // The port storing service definition.
 service PortHandler {

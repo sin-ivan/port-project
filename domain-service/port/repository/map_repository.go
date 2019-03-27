@@ -3,7 +3,7 @@ package repository
 import (
 	"sync"
 
-	models "github.com/port-project/domain-service/port"
+	models "github.com/sin-ivan/port-project/domain-service/port"
 )
 
 type mapPortRepository struct {

@@ -9,9 +9,9 @@ import (
 	"os"
 	"path/filepath"
 
-	models "github.com/port-project/api-service/port"
-	parser "github.com/port-project/api-service/port/parser"
-	sender "github.com/port-project/api-service/port/sender"
+	models "github.com/sin-ivan/port-project/api-service/port"
+	parser "github.com/sin-ivan/port-project/api-service/port/parser"
+	sender "github.com/sin-ivan/port-project/api-service/port/sender"
 )
 
 type handler struct {

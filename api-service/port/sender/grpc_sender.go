@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	models "github.com/port-project/api-service/port"
-	"github.com/port-project/api-service/port/delivery/grpc/port_grpc"
+	models "github.com/sin-ivan/port-project/api-service/port"
+	"github.com/sin-ivan/port-project/proto"
 	"google.golang.org/grpc"
 )
 
@@ -23,12 +23,12 @@ func address() string {
 }
 
 // transformToPortRPC is used to map model Port to gRPC port objects
-func (s *sender) transformPortDataToRPC(port *models.Port) *port_grpc.Port {
+func (s *sender) transformPortDataToRPC(port *models.Port) *proto_grpc.Port {
 	if port == nil {
 		return nil
 	}
 
-	response := &port_grpc.Port{
+	response := &proto_grpc.Port{
 		ID:          port.ID,
 		Name:        port.Name,
 		City:        port.City,
@@ -44,7 +44,7 @@ func (s *sender) transformPortDataToRPC(port *models.Port) *port_grpc.Port {
 	return response
 }
 
-func (s *sender) transformPortRPCToData(port *port_grpc.Port) *models.Port {
+func (s *sender) transformPortRPCToData(port *proto_grpc.Port) *models.Port {
 	if port == nil {
 		return nil
 	}
@@ -82,7 +82,7 @@ func (s *sender) StorePort(port *models.Port) {
 	}
 	defer conn.Close()
 
-	client := port_grpc.NewPortHandlerClient(conn)
+	client := proto_grpc.NewPortHandlerClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -105,12 +105,12 @@ func (s *sender) GetAll() []*models.Port {
 	}
 	defer conn.Close()
 
-	client := port_grpc.NewPortHandlerClient(conn)
+	client := proto_grpc.NewPortHandlerClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	// Request all the available items
-	r, err := client.GetAll(ctx, &port_grpc.EmptyRequest{})
+	r, err := client.GetAll(ctx, &proto_grpc.EmptyRequest{})
 	if err != nil {
 		log.Fatalf("could not get port info: %v", err)
 	}

@@ -12,7 +12,7 @@ import (
 
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	router "github.com/port-project/api-service/port/router"
+	router "github.com/sin-ivan/port-project/api-service/port/router"
 )
 
 func setupServer() {

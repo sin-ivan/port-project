@@ -7,8 +7,8 @@ import (
 	"github.com/golang/mock/gomock"
 	models "github.com/port-project/domain-service/port"
 	handler "github.com/port-project/domain-service/port/delivery/grpc/handler"
-	"github.com/port-project/domain-service/port/delivery/grpc/port_grpc"
 	"github.com/port-project/domain-service/port/usecase/mocks"
+	"github.com/port-project/proto"
 	"google.golang.org/grpc"
 )
 
@@ -28,7 +28,7 @@ func TestGetByIDWithItems(t *testing.T) {
 
 	var server *grpc.Server
 	ctx := context.Background()
-	req := &port_grpc.SingleRequest{
+	req := &proto_grpc.SingleRequest{
 		Id: identifier,
 	}
 
@@ -56,7 +56,7 @@ func TestGetByIDNotFound(t *testing.T) {
 
 	var server *grpc.Server
 	ctx := context.Background()
-	req := &port_grpc.SingleRequest{
+	req := &proto_grpc.SingleRequest{
 		Id: identifier,
 	}
 
@@ -81,7 +81,7 @@ func TestGetByIDNoItems(t *testing.T) {
 
 	var server *grpc.Server
 	ctx := context.Background()
-	req := &port_grpc.SingleRequest{
+	req := &proto_grpc.SingleRequest{
 		Id: identifier,
 	}
 
@@ -103,7 +103,7 @@ func TestGetAllNoItems(t *testing.T) {
 
 	var server *grpc.Server
 	ctx := context.Background()
-	req := &port_grpc.EmptyRequest{}
+	req := &proto_grpc.EmptyRequest{}
 
 	s := handler.NewPortServerGrpc(server, mockUsecase)
 	p, err := s.GetAll(ctx, req)
@@ -124,7 +124,7 @@ func TestGetAllFailedFetching(t *testing.T) {
 
 	var server *grpc.Server
 	ctx := context.Background()
-	req := &port_grpc.EmptyRequest{}
+	req := &proto_grpc.EmptyRequest{}
 
 	s := handler.NewPortServerGrpc(server, mockUsecase)
 	p, err := s.GetAll(ctx, req)
@@ -154,7 +154,7 @@ func TestGetAllWithItems(t *testing.T) {
 
 	var server *grpc.Server
 	ctx := context.Background()
-	req := &port_grpc.EmptyRequest{}
+	req := &proto_grpc.EmptyRequest{}
 
 	s := handler.NewPortServerGrpc(server, mockUsecase)
 	p, err := s.GetAll(ctx, req)
@@ -170,7 +170,7 @@ func TestStoreNoItems(t *testing.T) {
 
 	mockUsecase := mock_usecase.NewMockPortUsecase(ctrl)
 
-	portRes := &port_grpc.Port{
+	portRes := &proto_grpc.Port{
 		ID: "ABCDE",
 	}
 	portReq := &models.Port{
@@ -195,7 +195,7 @@ func TestStoreWithItems(t *testing.T) {
 
 	mockUsecase := mock_usecase.NewMockPortUsecase(ctrl)
 
-	portRes := &port_grpc.Port{
+	portRes := &proto_grpc.Port{
 		ID: "ABCDE",
 	}
 	portReq := &models.Port{
@@ -225,7 +225,7 @@ func TestUpdateNoItems(t *testing.T) {
 	portReq := &models.Port{
 		ID: "ABCDE",
 	}
-	portRes := &port_grpc.Port{
+	portRes := &proto_grpc.Port{
 		ID: "ABCDE",
 	}
 	mockUsecase.EXPECT().Update(portReq).Return(portReq, nil)
@@ -250,7 +250,7 @@ func TestUpdateWithItems(t *testing.T) {
 	portReq := &models.Port{
 		ID: "ABCDE",
 	}
-	portRes := &port_grpc.Port{
+	portRes := &proto_grpc.Port{
 		ID: "ABCDE",
 	}
 	err := models.ITEM_EXIST_ERROR
@@ -283,10 +283,10 @@ func TestDeleteWithItems(t *testing.T) {
 	portReq := &models.Port{
 		ID: "ABCDE",
 	}
-	portRes := &port_grpc.Port{
+	portRes := &proto_grpc.Port{
 		ID: "ABCDE",
 	}
-	req := &port_grpc.SingleRequest{
+	req := &proto_grpc.SingleRequest{
 		Id: "ABCDE",
 	}
 
@@ -316,7 +316,7 @@ func TestDeleteWithNoItems(t *testing.T) {
 
 	mockUsecase := mock_usecase.NewMockPortUsecase(ctrl)
 
-	req := &port_grpc.SingleRequest{
+	req := &proto_grpc.SingleRequest{
 		Id: "ABCDE",
 	}
 
